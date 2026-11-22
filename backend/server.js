@@ -114,6 +114,7 @@ app.use("/api", (req, res, next) => {
 // MAIN ROUTES
 // ==========================================
 
+// Home route
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -123,6 +124,15 @@ app.get("/", (req, res) => {
   });
 });
 
+// Health check for Render
+app.get("/healthz", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "EcoPulse Backend is healthy",
+  });
+});
+
+// Test auth route
 app.get("/test-auth", (req, res) => {
   res.status(200).json({
     success: true,
@@ -179,7 +189,7 @@ const startServer = async () => {
       console.log("Image Storage: MongoDB GridFS");
       console.log("GridFS Bucket: reportsImages");
       console.log(`Server Port: ${PORT}`);
-      console.log(`API: http://localhost:${PORT}/api`);
+      console.log(`API: Running on port ${PORT}`);
       console.log("--------------------------------");
     });
 
