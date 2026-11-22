@@ -22,12 +22,17 @@ const {
   errorHandler,
 } = require("./middleware/errorMiddleware");
 
-// Create Express App FIRST
+// Create Express App
 const app = express();
 
 // ==========================================
 // CORS CONFIGURATION
 // ==========================================
+
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.ADMIN_URL,
+].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -36,30 +41,21 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    try {
-      const parsedUrl = new URL(origin);
+    // Allow local development
+    const isLocalhost =
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-      const isLocalhost = [
-        "localhost",
-        "127.0.0.1",
-      ].includes(parsedUrl.hostname);
-
-      if (
-        isLocalhost &&
-        parsedUrl.protocol === "http:"
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(
-        new Error(`CORS blocked this origin: ${origin}`)
-      );
-
-    } catch (error) {
-      return callback(
-        new Error("Invalid request origin")
-      );
+    // Allow deployed frontend and admin
+    if (
+      isLocalhost ||
+      allowedOrigins.includes(origin)
+    ) {
+      return callback(null, true);
     }
+
+    return callback(
+      new Error(`CORS blocked this origin: ${origin}`)
+    );
   },
 
   credentials: true,
@@ -83,7 +79,7 @@ const corsOptions = {
 // MIDDLEWARE
 // ==========================================
 
-// Log all incoming requests
+// Log incoming requests
 app.use((req, res, next) => {
   console.log(
     `[REQUEST] ${req.method} ${req.originalUrl}`
@@ -95,9 +91,11 @@ app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "2mb" }));
 
-app.use(express.urlencoded({
-  extended: true,
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(cookieParser());
 
@@ -173,7 +171,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log("--------------------------------");
       console.log("       EcoPulse Backend");
       console.log("--------------------------------");
