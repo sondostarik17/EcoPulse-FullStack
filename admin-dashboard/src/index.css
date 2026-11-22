@@ -1,0 +1,72 @@
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Dark Mode */
+html {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+html.dark {
+  background-color: #100d16;
+  color: #f9fafb;
+}
+
+body {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* عناصر تظهر أثناء الـ Scroll */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.scroll-reveal.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ظهور من اليمين */
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(35px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.scroll-reveal-right.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ظهور من اليسار */
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-35px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.scroll-reveal-left.show {
+  opacity: 1;
+  transform: translateX(0);
+}
